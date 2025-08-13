@@ -1,0 +1,63 @@
+package commander
+
+import (
+	"log"
+	"net"
+	"net/http"
+	"os"
+	"time"
+)
+
+type commander struct{}
+
+func NewCommander() Commander {
+	return &commander{}
+}
+
+func (c *commander) Ping(host string) (PingResult, error) {
+	start := time.Now()
+
+	resp, err := http.Get(host)
+	if err != nil {
+		return PingResult{Successful: false}, err
+	}
+	defer resp.Body.Close()
+
+	duration := time.Since(start)
+	return PingResult{Successful: true, Time: duration}, nil
+}
+
+func (c *commander) GetSystemInfo() (SystemInfo, error) {
+	hostname, err := getLocalHostname()
+	if err != nil {
+		return SystemInfo{}, err
+	}
+
+	// Get IP address (implement this)
+	ip := getOutboundIP()
+	return SystemInfo{
+		Hostname:  hostname,
+		IPAddress: ip.String(),
+	}, nil
+}
+
+// Get preferred outbound ip of this machine
+func getOutboundIP() net.IP {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+
+	return localAddr.IP
+}
+
+func getLocalHostname() (string, error) {
+	hostname, err := os.Hostname()
+	if err != nil {
+		return hostname, err
+	}
+	return hostname, nil
+}
