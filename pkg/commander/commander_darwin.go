@@ -1,7 +1,6 @@
 package commander
 
 import (
-	"log"
 	"net"
 	"net/http"
 	"os"
@@ -33,8 +32,11 @@ func (c *commander) GetSystemInfo() (SystemInfo, error) {
 		return SystemInfo{}, err
 	}
 
-	// Get IP address (implement this)
-	ip := getOutboundIP()
+	// Get outbound IP address
+	ip, err := getOutboundIP()
+	if err != nil {
+		return SystemInfo{}, err
+	}
 	return SystemInfo{
 		Hostname:  hostname,
 		IPAddress: ip.String(),
@@ -42,16 +44,16 @@ func (c *commander) GetSystemInfo() (SystemInfo, error) {
 }
 
 // Get preferred outbound ip of this machine
-func getOutboundIP() net.IP {
+func getOutboundIP() (net.IP, error) {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer conn.Close()
 
 	localAddr := conn.LocalAddr().(*net.UDPAddr)
 
-	return localAddr.IP
+	return localAddr.IP, nil
 }
 
 func getLocalHostname() (string, error) {
