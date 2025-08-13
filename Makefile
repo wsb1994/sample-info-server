@@ -1,6 +1,6 @@
 # Makefile for building Go project for amd64 Linux or Apple Silicon Mac (arm64)
 
-APP_NAME := myapp  # Change to your app name
+APP_NAME := cpinfo
 
 .PHONY: all linux mac clean
 
