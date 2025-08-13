@@ -159,3 +159,5 @@ echo "  sudo rm /usr/local/bin/cpinfo"
 echo "  sudo rm -f /etc/paths.d/cpinfo"
 echo "  sudo launchctl unload /Library/LaunchDaemons/com.yourcompany.cpinfo.plist"
 echo "  sudo rm /Library/LaunchDaemons/com.yourcompany.cpinfo.plist"
+
+echo " sudo pkgutil --forget com.yourcompany.cpinfo "
