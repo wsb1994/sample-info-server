@@ -43,18 +43,17 @@ func (c *commander) GetSystemInfo() (SystemInfo, error) {
 	}, nil
 }
 
-// Get preferred outbound ip of this machine
 func getOutboundIP() (net.IP, error) {
-	conn, err := net.Dial("udp", "8.8.8.8:80")
-	if err != nil {
-		return nil, err
-	}
-	defer conn.Close()
+    conn, err := net.Dial("tcp", "8.8.8.8:80")
+    if err != nil {
+        return nil, err
+    }
+    defer conn.Close()
 
-	localAddr := conn.LocalAddr().(*net.UDPAddr)
-
-	return localAddr.IP, nil
+    localAddr := conn.LocalAddr().(*net.TCPAddr)
+    return localAddr.IP, nil
 }
+
 
 func getLocalHostname() (string, error) {
 	hostname, err := os.Hostname()
